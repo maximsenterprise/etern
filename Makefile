@@ -1,4 +1,4 @@
-CXX = clang
+CXX = g++
 CXX_ARGS = -std=c++2a -I include
 
 # Directory Constants
