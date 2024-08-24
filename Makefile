@@ -1,5 +1,6 @@
 CXX = g++
-CXX_ARGS = -std=c++2a -I include
+C = gcc
+CXX_ARGS = -std=c++2a -I ./include -I ./lib
 
 # Directory Constants
 SRC = etern
@@ -10,7 +11,7 @@ BIN = bin/etern
 SRCS = $(shell find $(SRC) -name "*.cpp")
 
 all:
-	$(CXX) $(CXX_ARGS) -o $(BIN) $(SRCS)
+	$(CXX) $(CXX_ARGS) -o $(BIN) $(SRCS) ./lib/json/yyjson.c
 
 clean:
 	rm bin/etern
