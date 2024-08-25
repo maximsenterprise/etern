@@ -6,10 +6,16 @@
 #include <cctype>
 
 std::string bold(std::string text) {
+    if (!FANCY) {
+        return text;
+    }
     return "\033[1m" + text + "\033[0m";
 }
 
 std::string italic(std::string text) {
+    if (!FANCY) {
+        return text;
+    }
     return "\033[3m" + text + "\033[0m";
 }
 
@@ -41,4 +47,9 @@ std::string to_lower(const std::string &str) {
     std::transform(lower_str.begin(), lower_str.end(), lower_str.begin(),
         [](unsigned char c) { return std::tolower(c); });
     return lower_str;
+}
+
+void error(const std::string &str) {
+    std::cout << "\033[31m" << bold(str) << "\033[0m" << std::endl;
+    std::exit(1);
 }

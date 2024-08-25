@@ -18,7 +18,69 @@ using namespace std;
 Config getConfig() {
     if (fileExists("~/.etern")) {
         // Return a first config
-        return Config(VCS::None, "", true, false);
+        std::map<std::string, std::string> config_map;
+
+        const std::string home = std::getenv("HOME");
+        std::ifstream file(home + "/.etern");
+        std::string content((std::istreambuf_iterator<char>(file)),
+                            (std::istreambuf_iterator<char>()));
+        
+        yyjson_doc *doc = yyjson_read(content.c_str(), content.size(), 0);
+        if (!doc) {
+            error("Cannot parse file ~/.etern; Verify that the file is not corrupted and it is in its original state");
+        }
+
+        yyjson_val *root = yyjson_doc_get_root(doc);
+        if (!yyjson_is_obj(root)) {
+            yyjson_doc_free(doc);
+            error("Cannot parse file ~/.etern; Verify that the file is not corrupted and it is in its original state");
+        }
+
+        yyjson_val *key, *val;
+        yyjson_obj_iter iter;
+        yyjson_obj_iter_init(root, &iter);
+        while ((key = yyjson_obj_iter_next(&iter))) {
+            val = yyjson_obj_iter_get_val(key);
+            if (yyjson_is_str(val)) {
+                std::string keyStr = yyjson_get_str(key);
+                std::string valStr = yyjson_get_str(val);
+                config_map[keyStr] = valStr;
+            }
+        }
+
+        yyjson_doc_free(doc);
+        std::string temp_dir;
+        bool fancy;
+        VCS version = VCS::None;
+
+        for (const auto pair : config_map) {
+            if (pair.first == "fancy_letters") {
+                if (pair.second == "true") {
+                    fancy = true;
+                } 
+                else {
+                    fancy = false;
+                }
+            }
+            else if (pair.first == "template_dir") {
+                temp_dir = pair.second;
+            }
+            else if (pair.first == "vcs") {
+                if (pair.second == "git") {
+                    version = VCS::Git;
+                }
+                else if (pair.second == "mercurial") {
+                    version = VCS::Mercurial;
+                }
+                else {
+                    error("Invalid VCS. Check if the file ~/.etern is modified and return it to its original state");
+                }
+            }
+            
+        }
+
+        return Config(version, temp_dir, fancy, false);
+
     }
     else {
         return Config(VCS::None, "", true, true);
