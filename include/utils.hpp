@@ -10,4 +10,6 @@ bool fileExists(const std::string &name);
 std::string trim(const std::string& str);
 std::string to_lower(const std::string &str);
 
+extern bool FANCY;
+
 #endif // UTILS_HPP
