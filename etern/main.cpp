@@ -7,7 +7,8 @@
 int main(int argc, char* argv[]) {
     Config conf = getConfig();
     if (conf.isFirst) {
-        setup();
+        Config user_conf = setup();
+        serialize_configuration(user_conf);
         return 0;
     }
     if (argc == 1) {

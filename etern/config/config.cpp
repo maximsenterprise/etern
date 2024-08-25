@@ -9,6 +9,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
+#include <map>
+#include <cstring>
+#include <cerrno>
 
 using namespace std;
 
@@ -157,4 +160,48 @@ std::string setup_in() {
 void success(std::string message) {
     std::cout << "\x1b[32m";
     std::cout << bold(message) << std::endl << std::endl;
+}
+
+void serialize_configuration(Config config) {
+    std::string version_str = "";
+    if (config.version == VCS::Git) {
+        version_str = "git";
+    }
+    else {
+        version_str = "mercurial";
+    } 
+
+    std::string fancy = config.fancyLetters? "true" : "false";
+    std::map<std::string, std::string> config_map = {
+        {"vcs", version_str},
+        {"fancy_letters", fancy},
+        {"template_dir", config.template_dir}
+    };
+
+    yyjson_mut_doc *doc = yyjson_mut_doc_new(NULL);
+    yyjson_mut_val *root = yyjson_mut_obj(doc);
+
+    for (const auto &pair : config_map) {
+        yyjson_mut_obj_add_str(doc, root, pair.first.c_str(), pair.second.c_str());
+    }
+
+    yyjson_mut_doc_set_root(doc, root);
+
+    char *json_str = yyjson_mut_write(doc, 0, NULL);
+
+    const std::string home = std::getenv("HOME");
+    std::ofstream file(home + "/.etern");
+
+    if (!file) {
+        std::cout << std::strerror(errno) << std::endl;
+        return;
+    }
+
+    file << json_str << std::endl;
+
+    file.close();
+
+    yyjson_mut_doc_free(doc);
+    free(json_str);
+    success("Configuration writed to ~/.etern");
 }

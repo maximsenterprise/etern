@@ -27,5 +27,6 @@ Config getConfig();
 Config setup();
 std::string setup_in();
 void success(std::string message);
+void serialize_configuration(Config configuration);
 
 #endif
