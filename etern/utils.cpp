@@ -61,6 +61,9 @@ void error(const std::string &str) {
 }
 
 void create_dir(const std::string &route) {
+    if (fileExists(route)) {
+        return;
+    }
     #ifdef _WIN32
     if (!CreateDirectory(route.c_str(), NULL)) {
         error("Cannot create directory");
@@ -70,4 +73,12 @@ void create_dir(const std::string &route) {
         error("Cannot create directory in specified location");
     }
     #endif
+}
+
+void create_file(const std::string &route) {
+    std::ofstream file(route);
+    if (!file) {
+        error("File could not be created");
+    }
+    file.close();
 }

@@ -18,6 +18,7 @@ public:
     bool begin_commit;
     std::string new_repo;
     std::string proj_path;
+    std::string repo_name = "";
 };
 
 void cpp(Project* proj);
@@ -25,12 +26,13 @@ void c_cpp(Project* proj);
 void c(Project* proj);
 void ada(Project* proj);
 void erlang(Project* proj);
-void typescript(Project* proj);
 void javascript(Project* proj);
 void java(Project* proj);
 void csharp(Project* proj);
 void rust(Project* proj);
+void python(Project* proj);
 
 void boilerplate(Project* proj);
+void init_vcs(Project* proj);
 
 #endif

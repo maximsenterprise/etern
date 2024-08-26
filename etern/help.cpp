@@ -16,7 +16,7 @@ void printHelp() {
     cout << "       Options:" << endl;
     cout << "       -n -> Create the project in the current folder" << endl;
     cout << "       --no-vcs -> No Version Control System" << endl;
-    cout << "       --commit -> Begin with a commit already pushed to the main branch" << endl;
+    cout << "       --commit -> Begin with a commit already made" << endl;
     cout << "       --from [repo] -> Begin with an already done Repository" << endl;
     cout << "       --lib -> Use the library version of the template" << endl;
 

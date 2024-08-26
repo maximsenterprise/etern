@@ -11,6 +11,7 @@ Config user_configuration = Config(VCS::None, "", false, true);
 
 int main(int argc, char* argv[]) {
     Config conf = getConfig();
+    user_configuration = conf;
     if (conf.isFirst) {
         Config user_conf = setup();
         serialize_configuration(user_conf);
