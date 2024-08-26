@@ -4,6 +4,12 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
 
 std::string bold(std::string text) {
     if (!FANCY) {
@@ -52,4 +58,16 @@ std::string to_lower(const std::string &str) {
 void error(const std::string &str) {
     std::cout << "\033[31m" << bold(str) << "\033[0m" << std::endl;
     std::exit(1);
+}
+
+void create_dir(const std::string &route) {
+    #ifdef _WIN32
+    if (!CreateDirectory(route.c_str(), NULL)) {
+        error("Cannot create directory");
+    }
+    #else
+    if (mkdir(route.c_str(), 0755) != 0) {
+        error("Cannot create directory in specified location");
+    }
+    #endif
 }

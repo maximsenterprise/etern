@@ -2,6 +2,7 @@
 #include "help.hpp"
 #include "config.hpp"
 #include "utils.hpp"
+#include "new.hpp"
 #include <vector>
 #include <cstring>
 
@@ -43,6 +44,17 @@ int main(int argc, char* argv[]) {
             std::cout << argv[1] << " is not a valid argument" << std::endl << std::endl;
             printHelp();
             return 1;
+        }
+    }
+    else {
+        std::vector<std::string> args;
+
+        for (int i = 0; i < argc; i++) {
+            args.push_back(std::string(argv[i]));
+        }
+
+        if (strcmp(argv[1], "new") == 0) {
+            new_proj(args, argc);
         }
     }
     return 0;
