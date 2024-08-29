@@ -1,9 +1,9 @@
 #include "utils.hpp"
-#include <fstream>
-#include <filesystem>
-#include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -26,12 +26,11 @@ std::string italic(std::string text) {
 }
 
 bool fileExists(const std::string &name) {
-    const char* home = std::getenv("HOME");
+    const char *home = std::getenv("HOME");
     std::string finalStr = "";
     if (name[0] == '~') {
         finalStr = home + name.substr(1);
-    }
-    else {
+    } else {
         finalStr = name;
     }
     std::ifstream infile(finalStr);
@@ -51,7 +50,7 @@ std::string trim(const std::string &str) {
 std::string to_lower(const std::string &str) {
     std::string lower_str = str;
     std::transform(lower_str.begin(), lower_str.end(), lower_str.begin(),
-        [](unsigned char c) { return std::tolower(c); });
+                   [](unsigned char c) { return std::tolower(c); });
     return lower_str;
 }
 
@@ -64,15 +63,15 @@ void create_dir(const std::string &route) {
     if (fileExists(route)) {
         return;
     }
-    #ifdef _WIN32
+#ifdef _WIN32
     if (!CreateDirectory(route.c_str(), NULL)) {
         error("Cannot create directory");
     }
-    #else
+#else
     if (mkdir(route.c_str(), 0755) != 0) {
         error("Cannot create directory in specified location");
     }
-    #endif
+#endif
 }
 
 void create_file(const std::string &route) {
@@ -81,4 +80,20 @@ void create_file(const std::string &route) {
         error("File could not be created");
     }
     file.close();
+}
+
+void run() {
+    if (!fileExists("/.etern")) {
+        error("Your project cannot be runned, initialize a etern project here "
+              "before");
+        return;
+    }
+    if (fileExists("/.etern/run.hast")) {
+        if (system("cd ./etern && hast") != 0) {
+            error("Command failed to execute. Check that Hast is installed");
+        }
+    } else {
+        error("Your project cannot be runned, check that ~/.etern/run.hast is "
+              "safe and that your project is runnable");
+    }
 }

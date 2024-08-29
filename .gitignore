@@ -2,3 +2,5 @@ git
 bin/
 core.*
 .vscode/
+.clang-format
+compile_commands.json

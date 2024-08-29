@@ -1,17 +1,17 @@
-#include <json/yyjson.h>
 #include "config.hpp"
 #include "utils.hpp"
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <json/yyjson.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
-#include <map>
-#include <cstring>
 #include <cerrno>
+#include <cstring>
+#include <map>
 
 using namespace std;
 
@@ -24,16 +24,18 @@ Config getConfig() {
         std::ifstream file(home + "/.etern");
         std::string content((std::istreambuf_iterator<char>(file)),
                             (std::istreambuf_iterator<char>()));
-        
+
         yyjson_doc *doc = yyjson_read(content.c_str(), content.size(), 0);
         if (!doc) {
-            error("Cannot parse file ~/.etern; Verify that the file is not corrupted and it is in its original state");
+            error("Cannot parse file ~/.etern; Verify that the file is not "
+                  "corrupted and it is in its original state");
         }
 
         yyjson_val *root = yyjson_doc_get_root(doc);
         if (!yyjson_is_obj(root)) {
             yyjson_doc_free(doc);
-            error("Cannot parse file ~/.etern; Verify that the file is not corrupted and it is in its original state");
+            error("Cannot parse file ~/.etern; Verify that the file is not "
+                  "corrupted and it is in its original state");
         }
 
         yyjson_val *key, *val;
@@ -57,40 +59,38 @@ Config getConfig() {
             if (pair.first == "fancy_letters") {
                 if (pair.second == "true") {
                     fancy = true;
-                } 
-                else {
+                } else {
                     fancy = false;
                 }
-            }
-            else if (pair.first == "template_dir") {
+            } else if (pair.first == "template_dir") {
                 temp_dir = pair.second;
-            }
-            else if (pair.first == "vcs") {
+            } else if (pair.first == "vcs") {
                 if (pair.second == "git") {
                     version = VCS::Git;
-                }
-                else if (pair.second == "mercurial") {
+                } else if (pair.second == "mercurial") {
                     version = VCS::Mercurial;
-                }
-                else {
-                    error("Invalid VCS. Check if the file ~/.etern is modified and return it to its original state");
+                } else {
+                    error("Invalid VCS. Check if the file ~/.etern is modified "
+                          "and return it to its original state");
                 }
             }
-            
         }
 
         return Config(version, temp_dir, fancy, false);
 
-    }
-    else {
+    } else {
         return Config(VCS::None, "", true, true);
     }
 }
 
 Config setup() {
     cout << bold("Welcome to Etern") << endl;
-    cout << "We need to do a couple of configurations before you begin." << endl;
-    cout << "Your preferences will be recorded in ~/.etern (Use 'exit' anytime to exit)" << endl << endl;
+    cout << "We need to do a couple of configurations before you begin."
+         << endl;
+    cout << "Your preferences will be recorded in ~/.etern (Use 'exit' anytime "
+            "to exit)"
+         << endl
+         << endl;
 
     // Version Control System
     cout << italic(bold("Which VCS (Version Control System) you use?")) << endl;
@@ -99,30 +99,34 @@ Config setup() {
     VCS vcs = VCS::None;
 
     while (true) {
-        if (to_lower(trim(vcs_in)) == "exit" || to_lower(trim(vcs_in)) == "end") {
+        if (to_lower(trim(vcs_in)) == "exit" ||
+            to_lower(trim(vcs_in)) == "end") {
             std::exit(0);
-        }
-        else if (to_lower(trim(vcs_in)) == "git") {
+        } else if (to_lower(trim(vcs_in)) == "git") {
             success("Git is now your VCS of preference");
             vcs = VCS::Git;
             break;
-        }
-        else if (to_lower(trim(vcs_in)) == "mercurial" || to_lower(trim(vcs_in)) == "hg") {
+        } else if (to_lower(trim(vcs_in)) == "mercurial" ||
+                   to_lower(trim(vcs_in)) == "hg") {
             success("Mercurial is now your VCS of preference");
             vcs = VCS::Mercurial;
             break;
-        }
-        else {
+        } else {
             std::cout << std::endl;
-            std::cout << "Your input does not correspond to a valid input (git, mercurial or hg)" << std::endl;
-            cout << italic(bold("Which VCS (Version Control System) you use?")) << endl;   
+            std::cout << "Your input does not correspond to a valid input "
+                         "(git, mercurial or hg)"
+                      << std::endl;
+            cout << italic(bold("Which VCS (Version Control System) you use?"))
+                 << endl;
             cout << "Mercurial or Git? (mercurial, hg, git)" << endl;
             vcs_in = setup_in();
         }
     }
 
     // Fancy letters
-    cout << italic(bold("Do you want italics and bolds (colors will not be changed)?")) << endl;
+    cout << italic(bold(
+                "Do you want italics and bolds (colors will not be changed)?"))
+         << endl;
     cout << "Yes or No? (yes, no)" << endl;
     std::string fancy_in = to_lower(trim(setup_in()));
     bool fancy_letters = true;
@@ -130,27 +134,30 @@ Config setup() {
     while (true) {
         if (fancy_in == "exit" || fancy_in == "end") {
             std::exit(0);
-        }
-        else if (fancy_in == "y" || fancy_in == "yes") {
+        } else if (fancy_in == "y" || fancy_in == "yes") {
             success("We'll show italics and bolds");
-            break;   
-        }
-        else if (fancy_in == "n" || fancy_in == "no") {
+            break;
+        } else if (fancy_in == "n" || fancy_in == "no") {
             fancy_letters = false;
             success("We won't show italics and bolds");
             break;
-        }
-        else {
+        } else {
             std::cout << std::endl;
-            std::cout << "Your input is not a valid input (must be 'yes' or 'no')" << std::endl;
-            cout << italic(bold("Do you want italics and bolds (colors will not be changed)?")) << endl;
+            std::cout
+                << "Your input is not a valid input (must be 'yes' or 'no')"
+                << std::endl;
+            cout << italic(bold("Do you want italics and bolds (colors will "
+                                "not be changed)?"))
+                 << endl;
             cout << "Yes or No? (yes, no)" << endl;
             fancy_in = to_lower(trim(setup_in()));
         }
     }
 
     // Template directory
-    cout << italic(bold("Which directory do you want for you custom templates?")) << endl;
+    cout << italic(
+                bold("Which directory do you want for you custom templates?"))
+         << endl;
     cout << "Default is '~/.eternTemplates" << endl;
     std::string temp_in = to_lower(trim(setup_in()));
     std::string temp = "";
@@ -162,8 +169,7 @@ Config setup() {
     if (temp_in == "") {
         std::string home = std::getenv("HOME");
         temp = home + "/.eternTemplates";
-    }
-    else {
+    } else {
         std::string home = std::getenv("HOME");
         if (temp_in[0] == '~') {
             temp = home + temp.substr(0, 1);
@@ -172,29 +178,25 @@ Config setup() {
 
     if (fileExists(temp)) {
         success("Templates directory is now: " + temp);
-    }
-    else {
-        #ifdef _WIN32
+    } else {
+#ifdef _WIN32
         if (CreateDirectory(temp.c_str(), NULL)) {
             success("Created Templates directory is: " + temp);
-        }
-        else {
+        } else {
             std::cout << "Cannot create folder: " + temp << std::endl;
             std::exit(1);
         }
-        #else
+#else
         if (mkdir(temp.c_str(), 0755) == 0) {
             success("Created Templates directory is: " + temp);
-        }
-        else {
+        } else {
             std::cout << "Cannot create folder: " + temp << std::endl;
             std::exit(1);
         }
-        #endif
+#endif
     }
 
     return Config(vcs, temp, fancy_letters, false);
-    
 }
 
 std::string setup_in() {
@@ -204,8 +206,7 @@ std::string setup_in() {
     char c = std::cin.get();
     if (c == '\n') {
         option == "";
-    }
-    else {
+    } else {
         std::cin.putback(c);
         while (true) {
             char c = std::cin.get();
@@ -228,23 +229,22 @@ void serialize_configuration(Config config) {
     std::string version_str = "";
     if (config.version == VCS::Git) {
         version_str = "git";
-    }
-    else {
+    } else {
         version_str = "mercurial";
-    } 
+    }
 
-    std::string fancy = config.fancyLetters? "true" : "false";
+    std::string fancy = config.fancyLetters ? "true" : "false";
     std::map<std::string, std::string> config_map = {
         {"vcs", version_str},
         {"fancy_letters", fancy},
-        {"template_dir", config.template_dir}
-    };
+        {"template_dir", config.template_dir}};
 
     yyjson_mut_doc *doc = yyjson_mut_doc_new(NULL);
     yyjson_mut_val *root = yyjson_mut_obj(doc);
 
     for (const auto &pair : config_map) {
-        yyjson_mut_obj_add_str(doc, root, pair.first.c_str(), pair.second.c_str());
+        yyjson_mut_obj_add_str(doc, root, pair.first.c_str(),
+                               pair.second.c_str());
     }
 
     yyjson_mut_doc_set_root(doc, root);
@@ -265,5 +265,5 @@ void serialize_configuration(Config config) {
 
     yyjson_mut_doc_free(doc);
     free(json_str);
-    success("Configuration writed to ~/.etern");
+    success("Configuration written to ~/.etern");
 }
