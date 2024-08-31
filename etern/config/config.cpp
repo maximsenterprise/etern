@@ -21,7 +21,7 @@ Config getConfig() {
         std::map<std::string, std::string> config_map;
 
         const std::string home = std::getenv("HOME");
-        std::ifstream file(home + "/.etern");
+        std::ifstream file(home + "/.etern/config.json");
         std::string content((std::istreambuf_iterator<char>(file)),
                             (std::istreambuf_iterator<char>()));
 
@@ -158,7 +158,7 @@ Config setup() {
     cout << italic(
                 bold("Which directory do you want for you custom templates?"))
          << endl;
-    cout << "Default is '~/.eternTemplates" << endl;
+    cout << "Default is '~/.etern/templates" << endl;
     std::string temp_in = to_lower(trim(setup_in()));
     std::string temp = "";
 
@@ -166,15 +166,17 @@ Config setup() {
         std::exit(0);
     }
 
+    std::string home = std::getenv("HOME");
+
     if (temp_in == "") {
-        std::string home = std::getenv("HOME");
-        temp = home + "/.eternTemplates";
+        temp = home + "/.etern/templates";
     } else {
-        std::string home = std::getenv("HOME");
         if (temp_in[0] == '~') {
             temp = home + temp.substr(0, 1);
         }
     }
+
+    create_dir(home + "/.etern");
 
     if (fileExists(temp)) {
         success("Templates directory is now: " + temp);
@@ -252,7 +254,7 @@ void serialize_configuration(Config config) {
     char *json_str = yyjson_mut_write(doc, 0, NULL);
 
     const std::string home = std::getenv("HOME");
-    std::ofstream file(home + "/.etern");
+    std::ofstream file(home + "/.etern/config.json");
 
     if (!file) {
         std::cout << std::strerror(errno) << std::endl;

@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -96,4 +98,21 @@ void run() {
         error("Your project cannot be runned, check that ~/.etern/run.hast is "
               "safe and that your project is runnable");
     }
+}
+
+std::vector<std::string> list_directory(const std::string &route) {
+    std::vector<std::string> files = {};
+    if (!fileExists(route)) {
+        error("Directory does not exist; Thus cannot be listed");
+    } else {
+        namespace fs = std::filesystem;
+        try {
+            for (const auto &entry : fs::directory_iterator(route)) {
+                files.push_back(entry.path());
+            }
+        } catch (const fs::filesystem_error &err) {
+            error(std::string("Error while listing files: ") + err.what());
+        }
+    }
+    return files;
 }

@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+Project *Shared::proj = new Project();
+
 void new_proj(std::vector<std::string> args, int arg_count) {
     std::string lang = "";
     std::string name = "";
@@ -145,7 +147,11 @@ void new_proj(std::vector<std::string> args, int arg_count) {
     } else if (lang == "zig") {
         zig(proj);
     } else {
-        error("No language " + lang + " try again.");
+        std::vector<std::string> templates =
+            list_directory(user_configuration.template_dir);
+        for (std::string item : templates) {
+            std::cout << item << std::endl;
+        }
     }
 }
 
@@ -184,9 +190,9 @@ void cpp(Project *proj) {
                    ".PHONY: all clean\n"
                    "SRCS = $(shell find $(SRC) -name \"*.cpp\")\n"
                    "all:\n"
-                   "   $(CXX) $(CXX_ARGS) $(SRCS) -o $(BIN)\n"
+                   "	$(CXX) $(CXX_ARGS) $(SRCS) -o $(BIN)\n"
                    "clean:\n"
-                   "   rm $(BIN)\n";
+                   "	rm $(BIN)\n";
     } else {
         makefile = "CXX = " + cpp_compiler +
                    "\n"
@@ -200,9 +206,9 @@ void cpp(Project *proj) {
                    ".PHONY: all clean\n"
                    "SRCS = $(shell find $(SRC) -name \"*.cpp\")\n"
                    "all:\n"
-                   "   $(CXX) $(CXX_ARGS) $(SRCS) -o $(LIB)\n"
+                   "	$(CXX) $(CXX_ARGS) $(SRCS) -o $(LIB)\n"
                    "clean:\n"
-                   "   rm $(BIN)\n";
+                   "	rm $(BIN)\n";
     }
     std::ofstream makefile_file(proj->proj_path + "/Makefile");
     if (!makefile_file) {
@@ -247,6 +253,22 @@ void python(Project *proj) {
     proj->run_cmd = "python3 " + proj->proj_path + "/main.py";
     boilerplate(proj);
     init_vcs(proj);
+}
+
+void elixir(Project *proj) {
+    if (proj->lib) {
+        std::cout << bold("Which is going to be your main Module Name?");
+        std::string mod_name = setup_in();
+        if (system(
+                ("mix new " + proj->name + " --module " + mod_name).c_str()) !=
+            0) {
+            error("Mix and Elixir are not installed on this system");
+        }
+    } else {
+        if (system(("mix new " + proj->name).c_str()) != 0) {
+            error("Mix and Elixir are not installed on this system");
+        }
+    }
 }
 
 void c_cpp(Project *proj) {
@@ -309,11 +331,11 @@ void c_cpp(Project *proj) {
                    "SRCS = $(shell find $(SRC) -name \"*.cpp\")\n"
                    "C_SRCS = $(shell find $(SRC) -name \"*.c\")\n"
                    "all:\n"
-                   "   $(CXX) $(CXX_ARGS) $(SRCS) -c -o $(BIN_C)\n"
-                   "   $(CC) $(C_ARGS) $(C_SRCS) -c -o $(BIN_CXX)\n"
-                   "   $(CXX) $(CXX_ARGS) $(BIN_C) $(BIN_CXX) -o $(BIN)\n"
+                   "	$(CXX) $(CXX_ARGS) $(SRCS) -c -o $(BIN_C)\n"
+                   "	$(CC) $(C_ARGS) $(C_SRCS) -c -o $(BIN_CXX)\n"
+                   "	$(CXX) $(CXX_ARGS) $(BIN_C) $(BIN_CXX) -o $(BIN)\n"
                    "clean:\n"
-                   "   rm $(BIN)\n";
+                   "	rm $(BIN)\n";
     } else {
         makefile = "CXX = " + cpp_compiler +
                    "\n"
@@ -334,10 +356,10 @@ void c_cpp(Project *proj) {
                    "SRCS = $(shell find $(SRC) -name \"*.cpp\")\n"
                    "C_SRCS = $(shell find $(SRC) -name \"*.c\")\n"
                    "all:\n"
-                   "   $(CXX) $(CXX_ARGS) $(SRCS) -c -o $(LIB)\n"
-                   "   $(CC) $(C_ARGS) $(C_SRCS) -c -o $(LIB)\n"
+                   "	$(CXX) $(CXX_ARGS) $(SRCS) -c -o $(LIB)\n"
+                   "	$(CC) $(C_ARGS) $(C_SRCS) -c -o $(LIB)\n"
                    "clean:\n"
-                   "   rm $(LIB)\n";
+                   "	rm $(LIB)\n";
     }
 
     std::ofstream makefile_file(proj->proj_path + "/Makefile");
@@ -624,9 +646,9 @@ void c(Project *proj) {
                    ".PHONY: all clean\n"
                    "SRCS = $(shell find $(SRC) -name \"*.c\")\n"
                    "all:\n"
-                   "   $(CC) $(C_ARGS) $(SRCS) -o $(BIN)\n"
+                   "	$(CC) $(C_ARGS) $(SRCS) -o $(BIN)\n"
                    "clean:\n"
-                   "   rm $(BIN)\n";
+                   "	rm $(BIN)\n";
     } else {
         makefile = "CC = " + c_compiler +
                    "\n"
@@ -640,9 +662,9 @@ void c(Project *proj) {
                    ".PHONY: all clean\n"
                    "SRCS = $(shell find $(SRC) -name \"*.c\")\n"
                    "all:\n"
-                   "   $(CC) $(C_ARGS) $(SRCS) -o $(LIB)\n"
+                   "	$(CC) $(C_ARGS) $(SRCS) -o $(LIB)\n"
                    "clean:\n"
-                   "   rm $(LIB)\n";
+                   "	rm $(LIB)\n";
     }
 
     std::ofstream makefile_file(proj->proj_path + "/Makefile");
