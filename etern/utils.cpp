@@ -1,6 +1,7 @@
 #include "utils.hpp"
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -115,4 +116,19 @@ std::vector<std::string> list_directory(const std::string &route) {
         }
     }
     return files;
+}
+
+std::vector<std::string> split(const std::string &str, char delim) {
+    std::vector<std::string> parts;
+    size_t start = 0;
+    size_t end = str.find(delim);
+
+    while (end != std::string::npos) {
+        parts.push_back(str.substr(start, end - start));
+        start = end + 1;
+        end = str.find(delim, start);
+    }
+
+    parts.push_back(str.substr(start, end));
+    return parts;
 }

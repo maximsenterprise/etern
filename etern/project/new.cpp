@@ -1,7 +1,9 @@
 
 #include "new.hpp"
 #include "config.hpp"
+#include "lang.hpp"
 #include "utils.hpp"
+#include <cstddef>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -149,9 +151,34 @@ void new_proj(std::vector<std::string> args, int arg_count) {
     } else {
         std::vector<std::string> templates =
             list_directory(user_configuration.template_dir);
+        std::vector<std::string> templateNames = {};
         for (std::string item : templates) {
-            std::cout << item << std::endl;
+            size_t lastSlash = item.find_last_of("/");
+            std::string fileName = (lastSlash == std::string::npos)
+                                       ? item
+                                       : item.substr(lastSlash + 1);
+            size_t lastDot = fileName.find_last_of(".");
+            if (lastDot != std::string::npos) {
+                fileName = fileName.substr(0, lastDot);
+            }
+            templateNames.push_back(fileName);
         }
+        for (std::string item : templateNames) {
+            if (lang == item) {
+                std::ifstream file(user_configuration.template_dir + "/" +
+                                   item + ".etern");
+                if (file) {
+                    std::string contents;
+                    std::string line;
+                    while (std::getline(file, line)) {
+                        contents = contents + line + "\n";
+                    }
+                    run_template(contents, proj);
+                }
+                return;
+            }
+        }
+        error("Language not supported by Etern or template not found");
     }
 }
 

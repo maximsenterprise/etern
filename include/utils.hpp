@@ -14,6 +14,7 @@ void create_dir(const std::string &route);
 void create_file(const std::string &route);
 void run();
 std::vector<std::string> list_directory(const std::string &route);
+std::vector<std::string> split(const std::string &str, char delim);
 
 extern bool FANCY;
 
