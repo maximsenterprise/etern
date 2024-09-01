@@ -1,7 +1,6 @@
 
 #include "new.hpp"
 #include "config.hpp"
-#include "lang.hpp"
 #include "utils.hpp"
 #include <cstddef>
 #include <cstdlib>
@@ -165,16 +164,13 @@ void new_proj(std::vector<std::string> args, int arg_count) {
         }
         for (std::string item : templateNames) {
             if (lang == item) {
-                std::ifstream file(user_configuration.template_dir + "/" +
-                                   item + ".etern");
-                if (file) {
-                    std::string contents;
-                    std::string line;
-                    while (std::getline(file, line)) {
-                        contents = contents + line + "\n";
-                    }
-                    run_template(contents, proj);
+                if (system(("ruby " + user_configuration.template_dir + "/" +
+                            item + ".rb " + proj->proj_path)
+                               .c_str()) != 0) {
+                    error("Template not found or Error in template");
                 }
+                init_vcs(proj);
+                boilerplate(proj);
                 return;
             }
         }

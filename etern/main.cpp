@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
             return 0;
         } else if (strcmp(argv[1], "--version") == 0) {
             std::cout << "Etern" << std::endl;
-            std::cout << "Version 1.0.0 Alpha" << std::endl;
+            std::cout << "Version 1.0.0 Release" << std::endl;
             std::cout << "Created by Maxims Enterprise" << std::endl;
         } else {
             std::cout << "Etern" << std::endl;
@@ -59,6 +59,30 @@ int main(int argc, char *argv[]) {
 
         if (strcmp(argv[1], "new") == 0) {
             new_proj(args, argc);
+        } else if (strcmp(argv[1], "remove") == 0) {
+            if (args[2] == "--all") {
+                if (system("sudo rm -rf ./*") == 0) {
+                    success("All files removed");
+                } else {
+                    error("Could not remove all files");
+                }
+            } else if (args[2] == "--vcs") {
+                if (user_configuration.version == VCS::None) {
+                    error("No VCS to remove");
+                } else if (user_configuration.version == VCS::Git) {
+                    if (system("sudo rm -rf .git") == 0) {
+                        success("VCS removed");
+                    } else {
+                        error("Could not remove VCS");
+                    }
+                } else if (user_configuration.version == VCS::Mercurial) {
+                    if (system("sudo rm -rf .hg") == 0) {
+                        success("VCS removed");
+                    } else {
+                        error("Could not remove VCS");
+                    }
+                }
+            }
         }
     }
     return 0;

@@ -22,11 +22,6 @@ void printHelp() {
     cout << "       --lib -> Use the library version of the template" << endl;
     cout << "       --no-run -> Do not create the run.hast file" << endl;
 
-    // Init command
-    cout << italic("init");
-    cout << " -> Create a basic etern project files (etern init [name])"
-         << endl;
-
     // Remove command
     cout << italic("remove");
     cout << " -> Remove the project in the current directory" << endl;
