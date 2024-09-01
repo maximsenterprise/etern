@@ -106,6 +106,10 @@ To run simply execute `etern run` in the project directory.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Acknowledgements
+
+Thank you to YaoYuan for yyjson, it is a great library for managing JSON with C++.
+
 ## Author
 
 Created by Maxims Enterprise in 2024. All rights reserved
