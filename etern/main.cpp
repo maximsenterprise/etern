@@ -38,6 +38,18 @@ int main(int argc, char *argv[]) {
             std::cout << "Etern" << std::endl;
             std::cout << "Version 1.0.0 Release" << std::endl;
             std::cout << "Created by Maxims Enterprise" << std::endl;
+        } else if (strcmp(argv[1], "run") == 0) {
+            if (!fileExists("./.etern/run.hast")) {
+                error("No run file found. Check that your project is runnable "
+                      "and that .etern/run.hast exists");
+            }
+            if (system("cd .etern && cp run.hast ../ && cd .. && hast") != 0) {
+                system("rm run.hast");
+                error("Could not run project.");
+            }
+            success("Project ran successfully");
+            system("rm run.hast");
+
         } else {
             std::cout << "Etern" << std::endl;
             std::cout << "Created by Maxims Enterprise" << std::endl;
@@ -83,6 +95,17 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
+        } else {
+            std::cout << "Etern" << std::endl;
+            std::cout << "Created by Maxims Enterprise" << std::endl;
+            std::cout << "----------------------------" << std::endl;
+
+            std::cout << "Invalid input. First argument is incorrect"
+                      << std::endl;
+            std::cout << argv[1] << " is not a valid argument" << std::endl
+                      << std::endl;
+            printHelp();
+            return 1;
         }
     }
     return 0;

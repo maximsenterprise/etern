@@ -242,8 +242,8 @@ void cpp(Project *proj) {
     create_file((proj->proj_path + "/src/main.cpp"));
 
     proj->run_cmd = "make\n(run) ./bin/" + proj->name;
-    init_vcs(proj);
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void init_vcs(Project *proj) {
@@ -394,9 +394,9 @@ void c_cpp(Project *proj) {
 
     create_file((proj->proj_path + "/src/main.cpp"));
 
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "make\n(run) ./bin/" + proj->name;
-    boilerplate(proj);
 }
 
 void crystal(Project *proj) {
@@ -407,9 +407,9 @@ void crystal(Project *proj) {
     } else if (system(("crystal init app " + proj->name).c_str()) != 0) {
         error("Crystal is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "crystal run " + proj->proj_path + "/src/main.cr";
-    boilerplate(proj);
 }
 
 void html(Project *proj) {
@@ -418,9 +418,9 @@ void html(Project *proj) {
     }
     create_dir(proj->proj_path);
     create_file(proj->proj_path + "/index.html");
+    boilerplate(proj);
     init_vcs(proj);
     proj->run = false;
-    boilerplate(proj);
 }
 
 void flutter(Project *proj) {
@@ -430,9 +430,9 @@ void flutter(Project *proj) {
     if (system(("flutter create " + proj->name).c_str()) != 0) {
         error("Flutter is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "flutter run";
-    boilerplate(proj);
 }
 
 void electron(Project *proj) {
@@ -443,9 +443,9 @@ void electron(Project *proj) {
         error("The create-electron-app package is not installed on this "
               "computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "npm start";
-    boilerplate(proj);
 }
 
 void fsharp(Project *proj) {
@@ -459,9 +459,9 @@ void fsharp(Project *proj) {
                0) {
         error("The dotnet suite is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "dotnet run";
-    boilerplate(proj);
 }
 
 void go(Project *proj) {
@@ -472,9 +472,9 @@ void go(Project *proj) {
     } else if (system(("go mod init " + proj->name).c_str()) != 0) {
         error("Go is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "go run " + proj->proj_path + "/src/main.go";
-    boilerplate(proj);
 }
 
 void haskell(Project *proj) {
@@ -510,9 +510,9 @@ void haskell(Project *proj) {
             error("Stack is not installed on this computer");
         }
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = haskell_compiler + " run";
-    boilerplate(proj);
 }
 
 void lua(Project *proj) {
@@ -521,9 +521,9 @@ void lua(Project *proj) {
     }
     create_dir(proj->proj_path);
     create_file(proj->proj_path + "/main.lua");
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "lua " + proj->proj_path + "/main.lua";
-    boilerplate(proj);
 }
 
 void nim(Project *proj) {
@@ -534,9 +534,9 @@ void nim(Project *proj) {
     } else if (system(("nimble init " + proj->name + " -t exe").c_str()) != 0) {
         error("Nim is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "nimble run";
-    boilerplate(proj);
 }
 
 void ocaml(Project *proj) {
@@ -547,9 +547,9 @@ void ocaml(Project *proj) {
     } else if (system(("dune init exe " + proj->name).c_str()) != 0) {
         error("Dune is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "dune exec";
-    boilerplate(proj);
 }
 
 void ruby(Project *proj) {
@@ -560,9 +560,9 @@ void ruby(Project *proj) {
     } else if (system(("bundle gem " + proj->name).c_str()) != 0) {
         error("Ruby is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "ruby " + proj->proj_path + "/bin/" + proj->name;
-    boilerplate(proj);
 }
 
 void rails(Project *proj) {
@@ -572,9 +572,9 @@ void rails(Project *proj) {
     if (system(("rails new " + proj->name).c_str()) != 0) {
         error("Rails is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "rails server";
-    boilerplate(proj);
 }
 
 void scala(Project *proj) {
@@ -584,9 +584,9 @@ void scala(Project *proj) {
     if (system(("sbt new scala/scala-seed.g8 -o " + proj->name).c_str()) != 0) {
         error("SBT is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "sbt run";
-    boilerplate(proj);
 }
 
 void spark(Project *proj) {
@@ -599,9 +599,9 @@ void spark(Project *proj) {
         0) {
         error("Spark is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "spark run";
-    boilerplate(proj);
 }
 
 void swift(Project *proj) {
@@ -615,9 +615,9 @@ void swift(Project *proj) {
                    .c_str()) != 0) {
         error("Swift is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "swift run";
-    boilerplate(proj);
 }
 
 void zig(Project *proj) {
@@ -628,9 +628,9 @@ void zig(Project *proj) {
     } else if (system(("zig init-exe " + proj->name).c_str()) != 0) {
         error("Zig is not installed on this computer");
     }
+    boilerplate(proj);
     init_vcs(proj);
     proj->run_cmd = "zig build run";
-    boilerplate(proj);
 }
 
 void c(Project *proj) {
@@ -697,9 +697,9 @@ void c(Project *proj) {
     makefile_file << makefile;
     makefile_file.close();
     create_file((proj->proj_path + "/src/main.c"));
-
-    init_vcs(proj);
+    proj->run_cmd = "make\n(run) ./bin/" + proj->name;
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void csharp(Project *proj) {
@@ -718,8 +718,8 @@ void csharp(Project *proj) {
     } else if (system(("dotnet new console -n" + proj->name).c_str()) != 0) {
         error("The dotnet suite is not installed on this computer");
     }
-    init_vcs(proj);
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void javascript(Project *proj) {
@@ -730,8 +730,8 @@ void javascript(Project *proj) {
         error("The NodeJS interpreter is not installed on this computer");
     }
     create_file((proj->proj_path + "/main.js"));
-    init_vcs(proj);
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void erlang(Project *proj) {
@@ -742,8 +742,8 @@ void erlang(Project *proj) {
     } else if (system(("rebar3 new app " + proj->name).c_str()) != 0) {
         error("Rebar3 for Erlang is not installed on this computer");
     }
-    init_vcs(proj);
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void java(Project *proj) {
@@ -768,8 +768,8 @@ void java(Project *proj) {
         error("Maven project initialitzation failed. Check that Maven is "
               "installed");
     }
-    init_vcs(proj);
     boilerplate(proj);
+    init_vcs(proj);
 }
 
 void rust(Project *proj) {
@@ -810,6 +810,7 @@ void ada(Project *proj) {
     }
     create_file(proj->proj_path + "/proj.apr");
     create_file(proj->proj_path + "/main.adb");
+    boilerplate(proj);
     init_vcs(proj);
 }
 
